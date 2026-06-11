@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financely Premium Edition</title>
+<meta name="description" content="Laporan Kesehatan Finansial Premium">
+<meta name="theme-color" content="#7c3aed">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Financely">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+  #pwa-banner { display:none; }
+</style>
+</head>
+<body class="bg-slate-900 font-sans min-h-screen flex items-center justify-center p-4 text-slate-100">
+
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-banner" style="position:absolute;top:0;left:0;right:0;background:#1e1b4b;border-bottom:1px solid #4338ca;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;z-index:50;">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <img src="icons/icon-192.png" style="width:36px;height:36px;border-radius:8px;" alt="Financely icon">
+    <div>
+      <p style="margin:0;font-size:13px;font-weight:600;color:#e0e7ff;">Financely Premium Edition</p>
+      <p style="margin:0;font-size:11px;color:#a5b4fc;">Instal sebagai aplikasi di perangkat ini</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;flex-shrink:0;">
+    <button id="btn-dismiss" style="background:transparent;border:1px solid #4338ca;color:#a5b4fc;padding:6px 12px;border-radius:8px;font-size:12px;cursor:pointer;">Nanti</button>
+    <button id="btn-install" style="background:#4f46e5;border:none;color:white;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;">Instal</button>
+  </div>
+</div>
+
+<!-- LAYAR LOGIN -->
+<div id="layar-login" class="bg-slate-800 p-8 rounded-3xl shadow-2xl border border-slate-700 w-full max-w-md transition-all duration-300" style="margin-top:0;">
+  <div class="text-center mb-6">
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;">
+      <img src="icons/icon-192.png" style="width:40px;height:40px;border-radius:10px;" alt="Financely logo">
+      <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-indigo-400">Financely</h1>
+    </div>
+    <p class="text-xs text-slate-400 mt-1">Premium Edition — Verifikasi Sistem 2026</p>
+  </div>
+  <div class="space-y-4">
+    <div>
+      <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nama Pengguna</label>
+      <input type="text" id="username" placeholder="Masukkan username..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-violet-500 text-white">
+    </div>
+    <div>
+      <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Kata Sandi</label>
+      <input type="password" id="password" placeholder="Masukkan password..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-violet-500 text-white">
+    </div>
+    <div id="login-err" class="hidden text-xs text-red-400 bg-red-950/40 border border-red-900/30 rounded-lg px-3 py-2">Username atau password salah.</div>
+    <button onclick="doLogin()" class="w-full bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-bold py-3 rounded-xl shadow-lg transition duration-200 mt-2 cursor-pointer text-sm">Masuk Sistem</button>
+  </div>
+  <div class="mt-6 pt-4 border-t border-slate-700/50 text-center">
+    <p class="text-xs text-amber-400/90 font-medium bg-amber-950/40 py-2 px-3 rounded-lg border border-amber-900/30">
+      Akun default: <strong class="text-white">anakhebat</strong> / <strong class="text-white">12345</strong>
+    </p>
+  </div>
+</div>
+
+<!-- HALAMAN KALKULATOR -->
+<div id="halaman-kalkulator" class="hidden w-full max-w-lg bg-slate-800 p-6 rounded-3xl shadow-2xl border border-slate-700 space-y-6" style="margin-top:0;">
+  <div class="flex justify-between items-start border-b border-slate-700/50 pb-4">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="icons/icon-192.png" style="width:32px;height:32px;border-radius:8px;" alt="">
+      <div>
+        <h2 class="text-xl font-bold text-white">Laporan Kesehatan Finansial</h2>
+        <p class="text-xs text-slate-400 mt-0.5">Kamis, 21 Mei 2026</p>
+      </div>
+    </div>
+    <span class="bg-emerald-950 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-900/50 uppercase tracking-wide">Terverifikasi</span>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 bg-slate-900/50 p-4 rounded-2xl border border-slate-700/30">
+    <div>
+      <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Pendapatan (Rp)</label>
+      <input type="number" id="input-pendapatan" value="0" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500">
+    </div>
+    <div>
+      <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Pengeluaran (Rp)</label>
+      <input type="number" id="input-pengeluaran" value="5000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500">
+    </div>
+    <button onclick="hitungKeuangan()" class="col-span-2 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 rounded-xl text-xs transition cursor-pointer">Hitung Ulang</button>
+  </div>
+
+  <div id="kartu-utama" class="p-6 rounded-2xl shadow-lg transition-all duration-500">
+    <p class="text-xs font-medium opacity-80 uppercase tracking-wider">Sisa Saldo Bersih</p>
+    <p id="teks-saldo" class="text-3xl font-black mt-1 tracking-tight">Rp 0</p>
+    <div class="mt-4 pt-3 border-t border-white/20 text-xs font-bold">
+      <span id="teks-indikator">...</span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4 text-sm">
+    <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-700/50">
+      <p class="text-xs text-slate-400">Pendapatan Kumulatif</p>
+      <p id="teks-kumulatif-pendapatan" class="text-base font-bold text-white mt-0.5">Rp 0</p>
+    </div>
+    <div class="bg-slate-900/40 p-4 rounded-xl border border-slate-700/50">
+      <p class="text-xs text-slate-400">Total Pengeluaran</p>
+      <p id="teks-kumulatif-pengeluaran" class="text-base font-bold text-white mt-0.5">Rp 0</p>
+    </div>
+  </div>
+
+  <div class="bg-slate-900/80 p-5 rounded-2xl border border-slate-700/80">
+    <h3 class="text-xs font-bold text-violet-400 uppercase tracking-wider mb-2">Rekomendasi Pintar Financely</h3>
+    <p id="teks-rekomendasi" class="text-xs text-slate-300 leading-relaxed">...</p>
+  </div>
+
+  <button onclick="doLogout()" class="w-full bg-slate-700/50 hover:bg-slate-700 text-slate-400 text-xs py-2 rounded-xl transition cursor-pointer">Keluar</button>
+</div>
+
+<script>
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('pwa-banner');
+  banner.style.display = 'flex';
+  const loginEl = document.getElementById('layar-login');
+  const calcEl = document.getElementById('halaman-kalkulator');
+  loginEl.style.marginTop = '70px';
+  calcEl.style.marginTop = '70px';
+});
+
+document.getElementById('btn-install').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('pwa-banner').style.display = 'none';
+});
+
+document.getElementById('btn-dismiss').addEventListener('click', () => {
+  document.getElementById('pwa-banner').style.display = 'none';
+  document.getElementById('layar-login').style.marginTop = '0';
+  document.getElementById('halaman-kalkulator').style.marginTop = '0';
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
+
+function doLogin() {
+  const u = document.getElementById('username').value.trim();
+  const p = document.getElementById('password').value;
+  const err = document.getElementById('login-err');
+  if (u === 'anakhebat' && p === '12345') {
+    document.getElementById('layar-login').classList.add('hidden');
+    document.getElementById('halaman-kalkulator').classList.remove('hidden');
+    hitungKeuangan();
+  } else {
+    err.classList.remove('hidden');
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+function doLogout() {
+  document.getElementById('halaman-kalkulator').classList.add('hidden');
+  document.getElementById('layar-login').classList.remove('hidden');
+  document.getElementById('username').value = '';
+  document.getElementById('password').value = '';
+}
+
+function formatRupiah(n) {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(n);
+}
+
+function hitungKeuangan() {
+  const pendapatan = parseFloat(document.getElementById('input-pendapatan').value) || 0;
+  const pengeluaran = parseFloat(document.getElementById('input-pengeluaran').value) || 0;
+  const saldo = pendapatan - pengeluaran;
+
+  document.getElementById('teks-kumulatif-pendapatan').innerText = formatRupiah(pendapatan);
+  document.getElementById('teks-kumulatif-pengeluaran').innerText = formatRupiah(pengeluaran);
+  document.getElementById('teks-saldo').innerText = formatRupiah(saldo);
+
+  const kartu = document.getElementById('kartu-utama');
+  const ind = document.getElementById('teks-indikator');
+  const rek = document.getElementById('teks-rekomendasi');
+
+  if (saldo < 0) {
+    kartu.className = "bg-gradient-to-r from-rose-600 to-red-600 text-white p-6 rounded-2xl shadow-lg transition-all duration-500";
+    ind.innerText = "Peringatan: pengeluaran melebihi pendapatan!";
+    rek.innerText = "Defisit sebesar " + formatRupiah(Math.abs(saldo)) + ". Segera tinjau pengeluaran non-esensial dan buat anggaran bulanan lebih ketat.";
+  } else if (saldo === 0) {
+    kartu.className = "bg-gradient-to-r from-amber-600 to-orange-600 text-white p-6 rounded-2xl shadow-lg transition-all duration-500";
+    ind.innerText = "Status: keuangan seimbang (pas-pasan)";
+    rek.innerText = "Keuangan seimbang, namun tidak ada tabungan tersisa. Cari pendapatan tambahan atau pangkas biaya kecil untuk mulai menabung.";
+  } else {
+    kartu.className = "bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-6 rounded-2xl shadow-lg transition-all duration-500";
+    ind.innerText = "Status: finansial sehat / surplus";
+    rek.innerText = "Saldo positif sebesar " + formatRupiah(saldo) + ". Alokasikan ke tabungan, investasi, atau dana darurat.";
+  }
+}
+</script>
+</body>
+</html>
